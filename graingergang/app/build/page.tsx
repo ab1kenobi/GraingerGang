@@ -194,11 +194,6 @@ export default function BuildPage() {
 
             <div className="space-y-4">
 
-              {/* Display AI summary */}
-              <p className="text-gray-700 mb-4">
-                {aiSummary}
-              </p>
-
               <p>
                 Generated {items} Recommended Tools
               </p>
