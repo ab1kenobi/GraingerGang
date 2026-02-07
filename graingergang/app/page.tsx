@@ -1,126 +1,175 @@
-// app/page.tsx
 "use client"
 
-import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useProject } from "./context/ProjectContext"
 
 export default function Home() {
   const router = useRouter()
-  const [formData, setFormData] = useState({
-    projectName: "",
-    budget: "",
-    timeline: "",
-    category: "renovation/electrical/plumbing",
-    description: ""
-  })
+  const { project, setProject } = useProject()
 
   const handleGenerateAIPlan = () => {
-    router.push('/build')
+
+    if (!project.projectName || !project.budget) {
+      alert("Please enter a project name and budget.")
+      return
+    }
+
+    router.push("/generating")
   }
 
   const handleManualBrowse = () => {
-    router.push('/products')
+
+    if (!project.projectName || !project.budget) {
+      alert("Please enter a project name and budget.")
+      return
+    }
+
+    router.push("/products")
   }
 
   return (
     <div className="min-h-screen bg-[#d0d0d0] p-8">
       <div className="max-w-6xl mx-auto">
-        {/* Header Navigation */}
+
+        {/* Header */}
         <div className="flex gap-5 mb-10">
-          <button className="bg-white hover:bg-gray-100 px-10 py-5 text-lg font-normal border-none cursor-pointer">
+          <button className="bg-white px-10 py-5">
             logo
           </button>
-          <button className="bg-white hover:bg-gray-100 px-10 py-5 text-lg font-normal border-none cursor-pointer">
+
+          <button className="bg-white px-10 py-5">
             new project
           </button>
-          <button className="bg-white hover:bg-gray-100 px-10 py-5 text-lg font-normal border-none cursor-pointer">
+
+          <button className="bg-white px-10 py-5">
             saved projects
           </button>
-          <button className="bg-white hover:bg-gray-100 px-10 py-5 text-lg font-normal border-none cursor-pointer">
+
+          <button className="bg-white px-10 py-5">
             help
           </button>
         </div>
 
-        {/* Form Section */}
+
+        {/* FORM */}
         <div className="bg-white p-10 mb-8">
           <div className="space-y-5">
+
+            {/* Project Name */}
             <div className="grid grid-cols-[200px_1fr] gap-8 items-center">
-              <label className="text-lg font-normal">project name:</label>
+              <label className="text-lg">project name:</label>
+
               <input
                 type="text"
-                className="bg-[#d0d0d0] border-none h-12 px-4 text-base"
-                value={formData.projectName}
-                onChange={(e) => setFormData({...formData, projectName: e.target.value})}
+                className="bg-[#d0d0d0] h-12 px-4"
+                value={project.projectName}
+                onChange={(e) =>
+                  setProject({
+                    ...project,
+                    projectName: e.target.value
+                  })
+                }
               />
             </div>
 
+
+            {/* Budget */}
             <div className="grid grid-cols-[200px_1fr] gap-8 items-center">
-              <label className="text-lg font-normal">budget:</label>
+              <label className="text-lg">budget:</label>
+
               <input
-                type="text"
-                className="bg-[#d0d0d0] border-none h-12 px-4 text-base"
-                value={formData.budget}
-                onChange={(e) => setFormData({...formData, budget: e.target.value})}
+                type="number"
+                className="bg-[#d0d0d0] h-12 px-4"
+                value={project.budget || ""}
+                onChange={(e) =>
+                  setProject({
+                    ...project,
+                    budget: Number(e.target.value)
+                  })
+                }
               />
             </div>
 
+
+            {/* Timeline */}
             <div className="grid grid-cols-[200px_1fr] gap-8 items-center">
-              <label className="text-lg font-normal">timeline:</label>
+              <label className="text-lg">timeline:</label>
+
               <input
                 type="text"
-                className="bg-[#d0d0d0] border-none h-12 px-4 text-base"
-                value={formData.timeline}
-                onChange={(e) => setFormData({...formData, timeline: e.target.value})}
+                className="bg-[#d0d0d0] h-12 px-4"
+                value={project.timeline}
+                onChange={(e) =>
+                  setProject({
+                    ...project,
+                    timeline: e.target.value
+                  })
+                }
               />
             </div>
 
+
+            {/* Category */}
             <div className="grid grid-cols-[200px_1fr] gap-8 items-center">
-              <label className="text-lg font-normal">category:</label>
+              <label className="text-lg">category:</label>
+
               <select
-                className="bg-[#d0d0d0] border-none h-12 px-4 text-base"
-                value={formData.category}
-                onChange={(e) => setFormData({...formData, category: e.target.value})}
+                className="bg-[#d0d0d0] h-12 px-4"
+                value={project.category}
+                onChange={(e) =>
+                  setProject({
+                    ...project,
+                    category: e.target.value
+                  })
+                }
               >
-                <option value="renovation/electrical/plumbing">renovation/electrical/plumbing</option>
+                <option value="">select category</option>
                 <option value="renovation">renovation</option>
                 <option value="electrical">electrical</option>
                 <option value="plumbing">plumbing</option>
               </select>
             </div>
+
           </div>
         </div>
 
-        {/* Description Section */}
+
+        {/* Description */}
         <div className="mb-12">
-          <label className="text-lg font-normal block mb-4">describe project</label>
+          <label className="text-lg block mb-4">
+            describe project
+          </label>
+
           <textarea
-            className="w-full bg-white border-2 border-gray-300 min-h-[200px] text-base p-4 resize-none"
-            value={formData.description}
-            onChange={(e) => setFormData({...formData, description: e.target.value})}
+            className="w-full bg-white border-2 border-gray-300 min-h-[200px] p-4"
+            value={project.description}
+            onChange={(e) =>
+              setProject({
+                ...project,
+                description: e.target.value
+              })
+            }
           />
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-14 justify-center mt-16">
-          <div className="relative">
-            <button
-              className="bg-white hover:bg-gray-100 px-12 py-5 text-lg font-normal border-none cursor-pointer"
-              onClick={handleGenerateAIPlan}
-            >
-              generate AI plan
-            </button>
-            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[20px] border-t-white" />
-          </div>
 
-          <div className="relative">
-            <button
-              className="bg-white hover:bg-gray-100 px-12 py-5 text-lg font-normal border-none cursor-pointer"
-              onClick={handleManualBrowse}
-            >
-              skip and browse manually
-            </button>
-            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[20px] border-t-white" />
-          </div>
+        {/* Buttons */}
+        <div className="flex gap-14 justify-center mt-16">
+
+          <button
+            onClick={handleGenerateAIPlan}
+            className="bg-white px-12 py-5 hover:bg-gray-100 transition"
+          >
+            generate AI plan
+          </button>
+
+          <button
+            onClick={handleManualBrowse}
+            className="bg-white px-12 py-5 hover:bg-gray-100 transition"
+          >
+            skip and browse manually
+          </button>
+
         </div>
       </div>
     </div>
