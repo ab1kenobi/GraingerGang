@@ -1,11 +1,36 @@
 // app/products/page.tsx
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
+
+type Product = {
+  id: string
+  title: string
+  item_number?: string
+  price?: string
+  availability?: string
+  url?: string
+  specs_flat?: string
+}
+
+async function fetchProducts(filters: { category: string; brand: string; price: string; inStock: string }) {
+  const params = new URLSearchParams()
+
+  // Map the Category filter to the "title" query param (searches by product title)
+  if (filters.category) params.set("title", filters.category)
+  if (filters.price) params.set("price", filters.price)
+  if (filters.inStock) params.set("availability", filters.inStock)
+
+  const res = await fetch(`/backend?${params.toString()}`)
+  if (!res.ok) throw new Error("Failed to fetch products")
+  return res.json()
+}
 
 export default function ProductsPage() {
   const router = useRouter()
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState({
     category: "",
     brand: "",
@@ -13,8 +38,22 @@ export default function ProductsPage() {
     inStock: ""
   })
 
-  // Mock product grid (20 items)
-  const products = Array.from({ length: 20 }, (_, i) => ({ id: i }))
+  // Load all products on first render
+  useEffect(() => {
+    fetchProducts({ category: "", brand: "", price: "", inStock: "" })
+      .then(setProducts)
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false))
+  }, [])
+
+  // Called when "submit product" (search) button is clicked
+  const handleSearch = () => {
+    setLoading(true)
+    fetchProducts(filters)
+      .then(setProducts)
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false))
+  }
 
   return (
     <div className="min-h-screen bg-[#d0d0d0]">
@@ -94,8 +133,11 @@ export default function ProductsPage() {
           </div>
 
           <div className="mt-12 flex justify-center">
-            <button className="bg-[#d0d0d0] border-none px-16 py-4 text-lg cursor-pointer hover:bg-[#c0c0c0]">
-              submit product
+            <button
+              className="bg-[#d0d0d0] border-none px-16 py-4 text-lg cursor-pointer hover:bg-[#c0c0c0]"
+              onClick={handleSearch}
+            >
+              search products
             </button>
           </div>
         </div>
@@ -103,15 +145,29 @@ export default function ProductsPage() {
         {/* Right Panel - Product Browser */}
         <div className="bg-white p-8">
           <h2 className="text-2xl text-center mb-8">Product Browser</h2>
-          
-          <div className="grid grid-cols-4 gap-4">
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="bg-[#c0c0c0] aspect-square cursor-pointer hover:bg-[#b0b0b0]"
-              />
-            ))}
-          </div>
+
+          {loading ? (
+            <p className="text-center text-gray-500">Loading products...</p>
+          ) : products.length === 0 ? (
+            <p className="text-center text-gray-500">No products found.</p>
+          ) : (
+            <div className="grid grid-cols-4 gap-4">
+              {products.map((product) => (
+                <div
+                  key={product.id}
+                  className="bg-[#c0c0c0] p-3 cursor-pointer hover:bg-[#b0b0b0] flex flex-col justify-between"
+                >
+                  <p className="text-sm font-semibold truncate">{product.title}</p>
+                  {product.price && (
+                    <p className="text-xs mt-1">{product.price}</p>
+                  )}
+                  {product.availability && (
+                    <p className="text-xs text-gray-600 mt-1">{product.availability}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 

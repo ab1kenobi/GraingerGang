@@ -3,17 +3,32 @@ import { supabase } from './supabase';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const category = searchParams.get('title');
-  const search = searchParams.get('search');
+  const label = searchParams.get('Label');
+  const name = searchParams.get('Product');
+  const price = searchParams.get('Prices');
+  const imageurl = searchParams.get('Image URL');
+  const graingerurl = searchParams.get('Grainger URL');
 
   let query = supabase.from('products').select('*');
-
-  if (category) {
-    query = query.ilike('title', `%${category}%`);
-  }
   
-  if (search) {
-    query = query.ilike('name', `%${search}%`); // Case-insensitive search
+  if (label) {
+    query = query.ilike('name', `%${label}%`); // Case-insensitive search
+  }
+
+  if (name) {
+    query = query.ilike('Name', `%${name}%`);
+  }
+
+  if (price) {
+    query = query.ilike('price', `%${price}%`);
+  }
+
+  if (imageurl) {
+    query = query.ilike('Photo', `%${imageurl}%`);
+  }
+
+  if (graingerurl) {
+    query = query.ilike('url', `%${graingerurl}%`);
   }
 
   // Limit to 50 items so we don't crash the browser
