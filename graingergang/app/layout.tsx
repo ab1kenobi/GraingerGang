@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 import { ProjectProvider } from "./context/ProjectContext";
-import Providers from "./providers"; // ⭐ animation wrapper
+import Providers from "./providers"; // animation wrapper
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -44,7 +44,7 @@ export default function CartPage() {
   const isOverBudget = calculations.total > budget
 
 
-  // Category breakdown for the summary
+  // category breakdown for summary
   const categoryBreakdown = useMemo(() => {
     const map: Record<string, number> = {}
     cartItems.forEach(item => {
@@ -59,7 +59,7 @@ export default function CartPage() {
     <div className="min-h-screen bg-gray-200 p-8">
       <div className="max-w-7xl mx-auto">
 
-        {/* Header */}
+        {/* header */}
         <div className="flex justify-between items-center mb-8 font-semibold">
 
           <button
@@ -93,7 +93,7 @@ export default function CartPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-          {/* Items Table */}
+          {/* items table */}
           <div className="bg-white p-6 rounded shadow">
 
             <div className="grid grid-cols-[2fr_1fr_1fr_80px_1fr_60px] gap-3 mb-4 font-semibold text-sm">
@@ -150,14 +150,14 @@ export default function CartPage() {
 
 
 
-          {/* Cost Panel */}
+          {/* cost panel */}
           <div className="bg-white p-6 rounded shadow">
 
             <h3 className="text-lg font-semibold mb-4">
               cost breakdown
             </h3>
 
-            {/* Category Bars */}
+            {/* category bars */}
             {categoryBreakdown.length > 0 && (
               <div className="mb-6">
                 <div className="flex gap-2 h-8 rounded overflow-hidden mb-2">
@@ -229,7 +229,7 @@ export default function CartPage() {
                     : 'bg-black text-white hover:bg-gray-800'
                 }`}
               >
-                {saved ? '✓ Project Saved!' : 'Save Project'}
+                {saved ? 'saved!' : 'Save Project'}
               </button>
 
               <button

@@ -45,7 +45,7 @@ export default function BuildPage() {
           category: project.category || undefined
         }
 
-        console.log('🔍 Sending to AI route:', requestBody)
+        console.log('sending to ai route:', requestBody)
 
         const response = await fetch('/backend/ai', {
           method: 'POST',
@@ -64,19 +64,19 @@ export default function BuildPage() {
           } catch {
             errorData = { error: `HTTP ${response.status}: ${responseText || 'No error message'}` }
           }
-          console.error('❌ API Error:', errorData)
+          console.error('api error:', errorData)
           throw new Error(errorData.error || `HTTP ${response.status}`)
         }
 
         const data = JSON.parse(responseText)
-        console.log('✅ Received data:', data)
+        console.log('received data:', data)
         
         setProducts(data.products || [])
         setAiSummary(data.aiText || 'AI recommendations generated')
 
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error'
-        console.error("❌ Failed to fetch AI recommendations:", errorMessage)
+        console.error("failed to fetch ai recommendations:", errorMessage)
         setError(`Error: ${errorMessage}`)
         setAiSummary('Failed to generate AI recommendations. Please try again.')
       } finally {
@@ -104,7 +104,7 @@ export default function BuildPage() {
 
 
   const handleGeneratePurchaseList = () => {
-    // Store products into shared context so cart page can use them
+    // store products into shared context
     setCartItems(products.map(p => ({
       id: p.id,
       item: p.product,
@@ -127,7 +127,7 @@ export default function BuildPage() {
       <div className="max-w-6xl mx-auto space-y-8">
 
 
-        {/* Header */}
+        {/* header */}
         <div className="flex justify-between items-center border-b pb-4">
 
           <div className="flex items-center gap-6">
@@ -157,7 +157,7 @@ export default function BuildPage() {
 
 
 
-        {/* AI Summary */}
+        {/* ai summary */}
         <div className="bg-white p-8 rounded shadow-sm">
 
           <h2 className="text-xl mb-6 font-semibold">
@@ -237,7 +237,7 @@ export default function BuildPage() {
 
 
 
-        {/* Products */}
+        {/* products */}
         <div className="bg-white p-6 rounded shadow-sm">
 
           <h3 className="text-lg mb-6 font-semibold">
@@ -277,7 +277,7 @@ export default function BuildPage() {
 
 
 
-        {/* Cart Bar */}
+        {/* cart bar */}
         <div className="bg-white p-8 flex justify-between items-center rounded shadow-sm">
 
           <div className="space-y-1">

@@ -4,8 +4,8 @@ from google import genai
 from google.genai import types
 from supabase import create_client, Client
 
-# 1. setup
-# load .env vars
+# setup
+# load env vars
 env_path = os.path.join(os.path.dirname(__file__), '..', '..', '.env.local')
 load_dotenv(env_path)
 
@@ -17,16 +17,16 @@ if not api_key:
     print("Error: GOOGLE_API_KEY missing.")
     exit(1)
 
-# configure the client
+# configure client
 gemini_client = genai.Client(api_key=api_key)
 supabase: Client = create_client(supabase_url, supabase_key)
 
-# 2. tool function for gemini
+# tool function for gemini
 def search_grainger_products(category: str, max_price: float):
     """
     Searches Supabase for products matching category and price.
     """
-    print(f"\n   [System] 🔍 Searching Supabase for '{category}' under ${max_price}...")
+    print(f"\n   [system] searching supabase for '{category}' under ${max_price}...")
     
     try:
         # query the table
@@ -42,7 +42,7 @@ def search_grainger_products(category: str, max_price: float):
         if not products:
             return "No products found within that budget."
             
-        # format the results for gemini
+        # format results for gemini
         results = []
         for p in products:
             name = p.get('product', 'Unknown Product')
@@ -55,20 +55,20 @@ def search_grainger_products(category: str, max_price: float):
     except Exception as e:
         return f"Database Error: {str(e)}"
 
-# 3. run example prompt
+# run example prompt
 if __name__ == "__main__":
     user_query = "I want to renovate my bathroom and begin by getting a new sink. What is a sink within my budget of 200?"
     print(f"User: {user_query}")
 
-    # tool configuration
-    # were just using the simplified dict config for maximum compatibility
+    # tool config
+    # simplified dict config for compatibility
     tool_config = {
         "tools": [search_grainger_products],
         "automatic_function_calling": {"disable": False}
     }
 
     try:
-        # call the actual model
+        # call model
         response = gemini_client.models.generate_content(
             model='gemini-2.5-flash', 
             contents=user_query,

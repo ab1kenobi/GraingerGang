@@ -1,18 +1,16 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-// Validate environment variables
 if (!supabaseUrl || !supabaseKey) {
-  console.error('❌ Missing Supabase environment variables');
+  console.error('missing supabase env vars');
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Extract meaningful search keywords from user description
+// extract search keywords from description
 function extractSearchTerms(text: string): string[] {
   const stopWords = new Set([
     'a','an','the','is','are','was','were','be','been','being','have','has','had',
@@ -44,25 +42,25 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { description, budget, category } = body;
 
-    console.log('📨 Received request:', { description, budget, category });
+    console.log('received request:', { description, budget, category });
 
     if (!description && !category) {
-      console.log('❌ Validation failed: Missing description and category');
+      console.log('validation failed: missing description and category');
       return NextResponse.json(
         { error: 'Description or category is required' },
         { status: 400 }
       );
     }
 
-    // 1. Extract search keywords from user description
+    // extract search keywords
     const searchTerms = extractSearchTerms(description || '');
-    console.log('🔑 Extracted search terms:', searchTerms);
+    console.log('extracted search terms:', searchTerms);
 
-    // 2. Query Supabase for matching products using keywords + category
-    console.log('🔍 Querying Supabase...');
+    // query supabase for matching products
+    console.log('querying supabase...');
     let query = supabase.from('grainger_products').select('*');
 
-    // Build OR conditions to search across both label and product columns
+    // build OR conditions for label + product columns
     const orConditions: string[] = [];
 
     if (category) {
@@ -85,37 +83,37 @@ export async function POST(request: Request) {
 
     const { data: products, error: dbError } = await query
       .order('price', { ascending: true })
-      .limit(30); // Get more products for AI to choose from
+      .limit(30);
 
     if (dbError) {
-      console.error('❌ Supabase query error:', dbError);
+      console.error('supabase query error:', dbError);
       return NextResponse.json(
         { error: 'Database query failed', details: dbError.message },
         { status: 500 }
       );
     }
 
-    console.log(`✅ Found ${products?.length || 0} products in database`);
+    console.log(`found ${products?.length || 0} products in db`);
 
     if (!products || products.length === 0) {
-      console.log('⚠️ No products found matching criteria');
+      console.log('no products found matching criteria');
       return NextResponse.json({
         aiText: 'No products found matching your criteria. Try adjusting your budget or category.',
         products: [],
       });
     }
 
-    // 2. Use Gemini to SELECT the best products
+    // use gemini to select best products
     const apiKey = process.env.GOOGLE_API_KEY;
     if (!apiKey) {
-      console.error('❌ GOOGLE_API_KEY not configured');
+      console.error('GOOGLE_API_KEY not configured');
       return NextResponse.json(
         { error: 'GOOGLE_API_KEY not configured' },
         { status: 500 }
       );
     }
 
-    // Build prompt for Gemini to SELECT products
+    // build gemini prompt
     const productList = (products || [])
       .map((p, idx) => `${idx}. [ID: ${p.id}] ${p.product} | $${p.price} | Category: ${p.label}`)
       .join('\n');
@@ -148,7 +146,7 @@ CRITICAL: Return ONLY the JSON object, nothing else.`;
     let aiSummary = 'AI recommendations based on your project criteria.';
 
     try {
-      console.log('🤖 Calling Gemini API...');
+      console.log('calling gemini api...');
       
       const geminiRes = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
@@ -167,27 +165,27 @@ CRITICAL: Return ONLY the JSON object, nothing else.`;
 
       if (!geminiRes.ok) {
         const errorText = await geminiRes.text();
-        console.error('❌ Gemini API HTTP error:', geminiRes.status, errorText);
+        console.error('gemini api http error:', geminiRes.status, errorText);
         throw new Error(`Gemini API returned ${geminiRes.status}`);
       }
 
       const geminiData = await geminiRes.json();
-      console.log('✅ Gemini response received');
+      console.log('gemini response received');
 
       if (geminiData.candidates?.[0]?.content?.parts?.[0]?.text) {
         const responseText = geminiData.candidates[0].content.parts[0].text;
-        console.log('📝 Raw Gemini response:', responseText.substring(0, 200) + '...');
+        console.log('raw gemini response:', responseText.substring(0, 200) + '...');
         
-        // Clean the response - remove markdown code blocks if present
+        // strip markdown code blocks if present
         const cleanedResponse = responseText
           .replace(/```json\n?/g, '')
           .replace(/```\n?/g, '')
           .trim();
 
         const aiResponse = JSON.parse(cleanedResponse);
-        console.log('✅ Parsed AI response:', aiResponse);
+        console.log('parsed ai response:', aiResponse);
         
-        // Map AI recommendations back to actual products (use String() to avoid type mismatch)
+        // map recommendations back to actual products
         selectedProducts = aiResponse.recommendations
           .map((rec: { id: string | number; reasoning?: string }) => {
             const product = products?.find(p => String(p.id) === String(rec.id));
@@ -202,24 +200,24 @@ CRITICAL: Return ONLY the JSON object, nothing else.`;
                 reasoning: rec.reasoning || '',
               };
             }
-            console.log(`⚠️ Product not found for ID: ${rec.id}`);
+            console.log(`product not found for id: ${rec.id}`);
             return null;
           })
           .filter((p: unknown) => p !== null)
           .slice(0, 6);
 
         aiSummary = aiResponse.summary || 'Selected products based on your project requirements.';
-        console.log(`✅ Selected ${selectedProducts.length} products`);
+        console.log(`selected ${selectedProducts.length} products`);
         
       } else if (geminiData.error) {
-        console.error('❌ Gemini API error:', geminiData.error);
+        console.error('gemini api error:', geminiData.error);
         throw new Error(geminiData.error.message || 'Gemini API error');
       } else {
-        console.error('❌ Unexpected Gemini response structure:', geminiData);
+        console.error('unexpected gemini response:', geminiData);
         throw new Error('Unexpected Gemini response structure');
       }
     } catch (error) {
-      console.error('❌ Gemini processing error:', error);
+      console.error('gemini processing error:', error);
       
       // Fallback: return first 6 products
       selectedProducts = (products || []).slice(0, 6).map(p => ({
@@ -234,10 +232,10 @@ CRITICAL: Return ONLY the JSON object, nothing else.`;
       
       const errorMsg = error instanceof Error ? error.message : 'Unknown error';
       aiSummary = `AI temporarily unavailable (${errorMsg}). Showing top matching products.`;
-      console.log(`⚠️ Using fallback: ${selectedProducts.length} products`);
+      console.log(`using fallback: ${selectedProducts.length} products`);
     }
 
-    console.log(`📤 Returning ${selectedProducts.length} products to client`);
+    console.log(`returning ${selectedProducts.length} products to client`);
 
     return NextResponse.json({
       aiText: aiSummary,
@@ -245,7 +243,7 @@ CRITICAL: Return ONLY the JSON object, nothing else.`;
     });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : 'Unknown error';
-    console.error('❌ AI route error:', err);
+    console.error('ai route error:', err);
     return NextResponse.json(
       { error: 'AI processing failed', details: message },
       { status: 500 }

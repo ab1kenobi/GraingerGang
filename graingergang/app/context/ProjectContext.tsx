@@ -69,7 +69,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [savedProjects, setSavedProjects] = useState<SavedProject[]>([])
 
-  // Load saved projects from localStorage on mount
+  // load saved projects from localstorage
   useEffect(() => {
     try {
       const stored = localStorage.getItem("grainger_saved_projects")
@@ -79,7 +79,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     } catch {}
   }, [])
 
-  // Persist saved projects to localStorage
+  // persist saved projects
   const persistProjects = (projects: SavedProject[]) => {
     setSavedProjects(projects)
     localStorage.setItem("grainger_saved_projects", JSON.stringify(projects))
@@ -104,7 +104,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       savedAt: new Date().toLocaleDateString(),
     }
 
-    // Replace if same name exists, otherwise add
+    // replace if same name exists, otherwise add
     const existing = savedProjects.findIndex(p => p.projectName === project.projectName)
     let updated: SavedProject[]
     if (existing >= 0) {

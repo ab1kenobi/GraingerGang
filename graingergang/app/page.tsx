@@ -49,10 +49,9 @@ export default function Home() {
     <div className="min-h-screen bg-[#d0d0d0] p-8">
       <div className="max-w-6xl mx-auto">
 
-        {/* ================= HEADER ================= */}
+        {/* header */}
         <div className="flex items-center gap-8 mb-12">
 
-          {/* LOGO */}
           <img
             src="/logo/logo.png"
             alt="Toolsmith logo"
@@ -69,7 +68,6 @@ export default function Home() {
             "
           />
 
-          {/* New Project */}
           <button
             onClick={handleNewProject}
             className="bg-white px-10 py-5 rounded-2xl shadow hover:bg-gray-100 transition"
@@ -77,7 +75,6 @@ export default function Home() {
             New Project
           </button>
 
-          {/* Saved Projects */}
           <button
             onClick={() => setShowSaved(!showSaved)}
             className={`px-10 py-5 rounded-2xl shadow transition ${
@@ -89,7 +86,6 @@ export default function Home() {
             Saved Projects
           </button>
 
-          {/* ✅ HELP BUTTON (FIXED) */}
           <Link
             href="/help"
             className="bg-white px-10 py-5 rounded-2xl shadow hover:bg-gray-100 transition inline-flex items-center"
@@ -99,7 +95,7 @@ export default function Home() {
         </div>
 
 
-        {/* ================= SAVED PROJECTS ================= */}
+        {/* saved projects */}
         {showSaved && (
           <div className="bg-white p-8 mb-8 rounded shadow">
             <h2 className="text-xl font-semibold mb-4">Saved Projects</h2>
@@ -157,7 +153,7 @@ export default function Home() {
         )}
 
 
-        {/* ================= FORM ================= */}
+        {/* form */}
         <div className="bg-white p-10 mb-8 rounded-2xl shadow">
           <div className="space-y-5">
 
@@ -185,38 +181,13 @@ export default function Home() {
               />
             </div>
 
-            <div className="grid grid-cols-[200px_1fr] gap-8 items-center">
-              <label className="text-lg font-medium">Timeline:</label>
-              <input
-                type="text"
-                className="bg-[#d0d0d0] h-12 px-4 rounded"
-                value={project.timeline}
-                onChange={(e) =>
-                  setProject({ ...project, timeline: e.target.value })
-                }
-              />
-            </div>
 
-            <div className="grid grid-cols-[200px_1fr] gap-8 items-center">
-              <label className="text-lg font-medium">Category:</label>
-              <select
-                className="bg-[#d0d0d0] h-12 px-4 rounded"
-                value={project.category}
-                onChange={(e) =>
-                  setProject({ ...project, category: e.target.value })
-                }
-              >
-                <option value="">Select Category</option>
-                <option value="renovation">Renovation</option>
-                <option value="electrical">Electrical</option>
-                <option value="plumbing">Plumbing</option>
-              </select>
-            </div>
+
           </div>
         </div>
 
 
-        {/* ================= DESCRIPTION ================= */}
+        {/* description */}
         <div className="mb-12">
           <label className="text-lg font-medium block mb-4">
             Project Description
@@ -232,7 +203,7 @@ export default function Home() {
         </div>
 
 
-        {/* ================= ACTION BUTTONS ================= */}
+        {/* action buttons */}
         <div className="flex gap-14 justify-center mt-16">
           <button
             onClick={handleGenerateAIPlan}

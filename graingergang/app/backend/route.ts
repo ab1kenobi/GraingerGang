@@ -13,17 +13,17 @@ export async function GET(request: Request) {
       .from('grainger_products')
       .select('*');
 
-    // Filter by category
+    // filter by category
     if (label) {
       query = query.ilike('label', `%${label}%`);
     }
 
-    // Filter by product name
+    // filter by product name
     if (product) {
       query = query.ilike('product', `%${product}%`);
     }
 
-    // Price filter
+    // price filter
     if (price) {
       query = query.lte('price', Number(price));
     }
@@ -41,8 +41,7 @@ export async function GET(request: Request) {
       );
     }
 
-    // VERY IMPORTANT DEBUG SIGNAL
-    console.log("✅ Supabase returned:", data?.length, "rows");
+    console.log("supabase returned:", data?.length, "rows");
 
     return NextResponse.json(data ?? []);
   } catch (err) {

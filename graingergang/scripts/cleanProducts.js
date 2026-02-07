@@ -1,11 +1,11 @@
 const fs = require("fs");
 const path = require("path");
 
-// ALWAYS resolve from project root
+// resolve from project root
 const filePath = path.join(process.cwd(), "products.json");
 
 if (!fs.existsSync(filePath)) {
-  console.error("❌ products.json NOT FOUND in project root.");
+  console.error("products.json not found in project root.");
   process.exit(1);
 }
 
@@ -26,4 +26,4 @@ fs.writeFileSync(
   JSON.stringify(cleaned, null, 2)
 );
 
-console.log("✅ Products cleaned.");
+console.log("products cleaned.");

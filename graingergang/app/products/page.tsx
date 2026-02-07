@@ -1,4 +1,4 @@
-// app/products/page.tsx
+// products page
 "use client"
 
 import { useState, useEffect } from "react"
@@ -17,9 +17,9 @@ type Product = {
 async function fetchProducts(filters: { category: string; brand: string; price: string; inStock: string }) {
   const params = new URLSearchParams()
 
-  // Map the Category filter to the "label" query param (searches by product label/category)
+  // map category filter to label param
   if (filters.category) params.set("label", filters.category)
-  // Map the Brand filter to "product" query param (searches product name which includes brand)
+  // map brand filter to product param
   if (filters.brand) params.set("product", filters.brand)
   if (filters.price) params.set("price", filters.price)
 
@@ -39,7 +39,7 @@ export default function ProductsPage() {
     inStock: ""
   })
 
-  // Load all products on first render
+  // load all products on mount
   useEffect(() => {
     fetchProducts({ category: "", brand: "", price: "", inStock: "" })
       .then(setProducts)
@@ -47,7 +47,7 @@ export default function ProductsPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  // Called when "search products" button is clicked
+  // triggered on search button click
   const handleSearch = () => {
     setLoading(true)
     fetchProducts(filters)
@@ -56,12 +56,12 @@ export default function ProductsPage() {
       .finally(() => setLoading(false))
   }
 
-  // Build category dropdown options from current products list
+  // build category options from products
   const categoryOptions = Array.from(new Set(products.map((p) => p.label).filter(Boolean))).sort()
 
   return (
     <div className="min-h-screen bg-[#d0d0d0]">
-      {/* Top Bar */}
+      {/* top bar */}
       <div className="bg-[#d0d0d0] border-b-2 border-black px-8 py-6">
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-4">
@@ -79,14 +79,14 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* main content */}
       <div className="p-8 grid grid-cols-[1fr_2fr] gap-6">
-        {/* Left Panel - Filters */}
+        {/* left panel - filters */}
         <div className="bg-white p-8">
           <h2 className="text-2xl text-center mb-8">Filters</h2>
 
           <div className="space-y-6">
-            {/* ✅ Category DROPDOWN (label) */}
+            {/* category dropdown */}
             <div className="grid grid-cols-[120px_1fr] gap-4 items-center">
               <label className="text-lg">Category:</label>
               <select
@@ -144,7 +144,7 @@ export default function ProductsPage() {
           </div>
         </div>
 
-        {/* Right Panel - Product Browser */}
+        {/* right panel - product browser */}
         <div className="bg-white p-8">
           <h2 className="text-2xl text-center mb-8">Product Browser</h2>
 
@@ -179,10 +179,10 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {/* Bottom Section */}
+      {/* bottom section */}
       <div className="px-8 pb-8">
         <div className="grid grid-cols-2 gap-8">
-          {/* Cart Preview */}
+          {/* cart preview */}
           <div className="bg-white p-8">
             <h2 className="text-2xl text-center mb-6">cart preview</h2>
 
@@ -199,7 +199,7 @@ export default function ProductsPage() {
             </div>
           </div>
 
-          {/* Go to Build Button */}
+          {/* go to build button */}
           <div className="flex items-end justify-end pb-8">
             <div className="relative">
               <button
