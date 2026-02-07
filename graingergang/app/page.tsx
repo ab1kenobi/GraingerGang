@@ -1,12 +1,21 @@
 "use client"
 
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useProject } from "./context/ProjectContext"
 
 export default function Home() {
   const router = useRouter()
-  const { project, setProject, savedProjects, loadProject, deleteProject, resetProject } = useProject()
+  const {
+    project,
+    setProject,
+    savedProjects,
+    loadProject,
+    deleteProject,
+    resetProject,
+  } = useProject()
+
   const [showSaved, setShowSaved] = useState(false)
 
   const handleGenerateAIPlan = () => {
@@ -43,7 +52,7 @@ export default function Home() {
         {/* ================= HEADER ================= */}
         <div className="flex items-center gap-8 mb-12">
 
-          {/* BIGGER LOGO */}
+          {/* LOGO */}
           <img
             src="/logo/logo.png"
             alt="Toolsmith logo"
@@ -60,6 +69,7 @@ export default function Home() {
             "
           />
 
+          {/* New Project */}
           <button
             onClick={handleNewProject}
             className="bg-white px-10 py-5 rounded-2xl shadow hover:bg-gray-100 transition"
@@ -67,6 +77,7 @@ export default function Home() {
             New Project
           </button>
 
+          {/* Saved Projects */}
           <button
             onClick={() => setShowSaved(!showSaved)}
             className={`px-10 py-5 rounded-2xl shadow transition ${
@@ -78,9 +89,13 @@ export default function Home() {
             Saved Projects
           </button>
 
-          <button className="bg-white px-10 py-5 rounded-2xl shadow hover:bg-gray-100 transition">
+          {/* ✅ HELP BUTTON (FIXED) */}
+          <Link
+            href="/help"
+            className="bg-white px-10 py-5 rounded-2xl shadow hover:bg-gray-100 transition inline-flex items-center"
+          >
             Help
-          </button>
+          </Link>
         </div>
 
 
@@ -113,11 +128,13 @@ export default function Home() {
                         <span>Budget: ${sp.budget.toLocaleString()}</span>
                         <span>Items: {sp.items.length}</span>
                         <span>Total: ${sp.totalCost.toFixed(2)}</span>
-                        <span className={
-                          sp.totalCost > sp.budget
-                            ? "text-red-600 font-semibold"
-                            : "text-green-600 font-semibold"
-                        }>
+                        <span
+                          className={
+                            sp.totalCost > sp.budget
+                              ? "text-red-600 font-semibold"
+                              : "text-green-600 font-semibold"
+                          }
+                        >
                           {sp.totalCost > sp.budget ? "Over Budget" : "Under Budget"}
                         </span>
                       </div>
@@ -195,7 +212,6 @@ export default function Home() {
                 <option value="plumbing">Plumbing</option>
               </select>
             </div>
-
           </div>
         </div>
 
@@ -216,7 +232,7 @@ export default function Home() {
         </div>
 
 
-        {/* ================= BUTTONS ================= */}
+        {/* ================= ACTION BUTTONS ================= */}
         <div className="flex gap-14 justify-center mt-16">
           <button
             onClick={handleGenerateAIPlan}
