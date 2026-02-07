@@ -1,7 +1,7 @@
 export type Product = {
   id: string
   name: string
-  category: string
+  category: "Plumbing" | "Renovation" | "Electrical";
   price: number
   durability_score: number
   vendor_link: string
@@ -12,7 +12,7 @@ export const mockProducts: Product[] = [
   {
     id: "1",
     name: "Industrial Cordless Drill",
-    category: "Power Tools",
+    category: "Electrical",
     price: 229,
     durability_score: 8,
     vendor_link: "https://www.grainger.com/",
@@ -21,7 +21,7 @@ export const mockProducts: Product[] = [
   {
     id: "2",
     name: "Steel Storage Shelving Unit",
-    category: "Storage",
+    category: "Renovation",
     price: 799,
     durability_score: 9,
     vendor_link: "https://www.grainger.com/",
@@ -30,7 +30,7 @@ export const mockProducts: Product[] = [
   {
     id: "3",
     name: "Safety Gloves (Pack of 12)",
-    category: "Safety",
+    category: "Renovation",
     price: 49,
     durability_score: 7,
     vendor_link: "https://www.grainger.com/",
