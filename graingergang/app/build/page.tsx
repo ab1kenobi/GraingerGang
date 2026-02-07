@@ -18,20 +18,37 @@ export default function BuildPage() {
     router.push('/cart')
   }
 
+  const handleBack = () => {
+    router.push('/')
+  }
+
   return (
     <div className="min-h-screen bg-[#d0d0d0] p-8">
       <div className="max-w-6xl mx-auto space-y-8">
 
+        {/* HEADER WITH BACK BUTTON */}
         <div className="flex justify-between items-center border-b pb-4">
-          <div className="flex gap-8 text-lg">
-            <span>project: {projectName}</span>
-            <span>budget: ${budget.toLocaleString()}</span>
+
+          <div className="flex items-center gap-6">
+
+            <button
+              onClick={handleBack}
+              className="bg-white/80 backdrop-blur px-4 py-2 rounded hover:bg-white transition"
+            >
+              ← Back
+            </button>
+
+            <div className="flex gap-8 text-lg">
+              <span>project: {projectName}</span>
+              <span>budget: ${budget.toLocaleString()}</span>
+            </div>
           </div>
 
           <span className="text-lg font-semibold">
             cart: {items}
           </span>
         </div>
+
 
         <div className="bg-white p-8 rounded">
           <h2 className="text-xl mb-6 font-semibold">
@@ -77,6 +94,7 @@ export default function BuildPage() {
           </div>
         </div>
 
+
         <div className="grid grid-cols-2 gap-8">
 
           <div className="bg-white p-6 rounded">
@@ -111,6 +129,7 @@ export default function BuildPage() {
             </div>
           </div>
 
+
           <div className="bg-white p-6 rounded">
             <h3 className="text-lg mb-4 font-semibold">
               Product Browser
@@ -127,6 +146,7 @@ export default function BuildPage() {
           </div>
 
         </div>
+
 
         <div className="bg-white p-8 flex justify-between items-center rounded">
           <div className="space-y-1">
