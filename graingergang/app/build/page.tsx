@@ -24,9 +24,9 @@ export default function BuildPage() {
 
   const budget = project.budget || 0
 
+
   useEffect(() => {
 
-    // 🚨 Never fetch with no budget
     if (!budget) {
       setLoading(false)
       return
@@ -34,15 +34,8 @@ export default function BuildPage() {
 
     async function loadProducts() {
       try {
-
-        // ⭐ Smart demo behavior:
-        // Pull products UNDER budget so AI looks intelligent
-        const data = await getProducts({
-          price: budget
-        })
-
+        const data = await getProducts({ price: budget })
         setProducts(data)
-
       } catch (err) {
         console.error("Failed to fetch products:", err)
       } finally {
@@ -55,7 +48,6 @@ export default function BuildPage() {
   }, [budget])
 
 
-  // ⭐ REAL calculations
   const estimatedCost =
     products.reduce((sum, p) => sum + Number(p.price), 0)
 
@@ -78,11 +70,13 @@ export default function BuildPage() {
     router.push('/')
   }
 
+
   return (
     <div className="min-h-screen bg-[#d0d0d0] p-8">
       <div className="max-w-6xl mx-auto space-y-8">
 
-        {/* HEADER */}
+
+        {/* Header */}
         <div className="flex justify-between items-center border-b pb-4">
 
           <div className="flex items-center gap-6">
@@ -96,24 +90,25 @@ export default function BuildPage() {
 
             <div className="flex gap-8 text-lg font-semibold">
               <span>
-                project: {project.projectName || "Untitled Project"}
+                Project: {project.projectName || "Untitled Project"}
               </span>
 
               <span>
-                budget: ${budget.toLocaleString()}
+                Budget: ${budget.toLocaleString()}
               </span>
             </div>
           </div>
 
           <span className="text-lg font-semibold">
-            cart: {items}
+            Cart: {items}
           </span>
         </div>
 
 
 
-        {/* AI SUMMARY */}
+        {/* AI Summary */}
         <div className="bg-white p-8 rounded shadow-sm">
+
           <h2 className="text-xl mb-6 font-semibold">
             AI Results Summary
           </h2>
@@ -121,7 +116,7 @@ export default function BuildPage() {
           {loading ? (
 
             <p className="animate-pulse">
-              Generating smart recommendations...
+              Generating Smart Recommendations...
             </p>
 
           ) : (
@@ -150,7 +145,6 @@ export default function BuildPage() {
               </p>
 
 
-              {/* Progress Bar */}
               <div className="w-full bg-gray-300 h-4 rounded overflow-hidden">
                 <div
                   className={`h-4 ${
@@ -161,7 +155,7 @@ export default function BuildPage() {
               </div>
 
               <p className="text-sm text-gray-600">
-                {percentUsed.toFixed(0)}% of budget used
+                {percentUsed.toFixed(0)}% of Budget Used
               </p>
 
             </div>
@@ -172,7 +166,7 @@ export default function BuildPage() {
 
 
 
-        {/* PRODUCT GRID */}
+        {/* Products */}
         <div className="bg-white p-6 rounded shadow-sm">
 
           <h3 className="text-lg mb-6 font-semibold">
@@ -181,17 +175,16 @@ export default function BuildPage() {
 
           {loading ? (
 
-            <p>Loading products...</p>
+            <p>Loading Products...</p>
 
           ) : products.length === 0 ? (
 
             <p className="text-gray-500">
-              No products found within this budget.
+              No Products Found Within This Budget
             </p>
 
           ) : (
 
-            // ⭐ responsive grid upgrade
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product) => (
                 <ProductCard
@@ -207,16 +200,16 @@ export default function BuildPage() {
 
 
 
-        {/* CART BAR */}
+        {/* Cart Bar */}
         <div className="bg-white p-8 flex justify-between items-center rounded shadow-sm">
 
           <div className="space-y-1">
             <p>
-              items: {items}
+              Items: {items}
             </p>
 
             <p className="font-semibold">
-              total: ${estimatedCost.toLocaleString()}
+              Total: ${estimatedCost.toLocaleString()}
             </p>
           </div>
 

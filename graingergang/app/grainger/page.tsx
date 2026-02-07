@@ -19,18 +19,27 @@ export default function CheckoutPage() {
     <div className="min-h-screen bg-[#d0d0d0] p-8">
       <div className="max-w-4xl mx-auto space-y-8">
 
-        <h1 className="text-3xl font-semibold text-center">checkout</h1>
+        <h1 className="text-3xl font-bold text-center tracking-wide">
+          CHECKOUT SUMMARY
+        </h1>
 
         <div className="bg-white p-8 rounded">
-          <h2 className="text-xl mb-6 font-semibold">items summary</h2>
+          <h2 className="text-xl font-semibold mb-6 tracking-wide">
+            ORDER SUMMARY
+          </h2>
 
           <div className="space-y-4">
             {items.map((item) => (
               <div key={item.id} className="flex items-center gap-4">
-                <span className="w-24">item #{item.id}</span>
-                <div className="w-24 h-16 bg-gray-300"></div>
-                <button className="flex-1 bg-gray-300 px-6 py-3 text-center">
-                  view on granger
+
+                <span className="w-28 font-medium tracking-wide">
+                  ITEM ID #{item.id}
+                </span>
+
+                <div className="w-24 h-16 bg-gray-300 rounded"></div>
+
+                <button className="flex-1 bg-gray-300 px-6 py-3 text-center font-medium tracking-wide">
+                  VIEW ON GRAINGER
                 </button>
               </div>
             ))}
@@ -38,27 +47,33 @@ export default function CheckoutPage() {
         </div>
 
         <div className="bg-white p-8 rounded">
-          <p className="text-lg">total: ${total.toFixed(2)}</p>
+          <p className="text-lg font-semibold tracking-wide">
+            TOTAL COST: ${total.toFixed(2)}
+          </p>
         </div>
 
         <div className="flex flex-col items-center gap-4">
-          <button className="w-96 bg-white px-6 py-4 text-center border hover:bg-gray-100 transition">
-            open in grainger
+
+          <button className="w-96 bg-white px-6 py-4 border font-semibold tracking-wide hover:bg-gray-100 transition">
+            OPEN IN GRAINGER
           </button>
-          <button className="w-96 bg-white px-6 py-4 text-center border hover:bg-gray-100 transition">
-            save project
+
+          <button className="w-96 bg-white px-6 py-4 border font-semibold tracking-wide hover:bg-gray-100 transition">
+            SAVE PROJECT
           </button>
+
           <button 
             onClick={() => router.push('/')}
-            className="w-96 bg-white px-6 py-4 text-center border hover:bg-gray-100 transition"
+            className="w-96 bg-white px-6 py-4 border font-semibold tracking-wide hover:bg-gray-100 transition"
           >
-            start new project
+            START NEW PROJECT
           </button>
+
         </div>
 
         <button
           onClick={() => router.back()}
-          className="absolute top-8 left-8 text-2xl"
+          className="absolute top-8 left-8 text-2xl font-semibold"
         >
           ←
         </button>

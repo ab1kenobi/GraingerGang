@@ -8,9 +8,8 @@ export default function Home() {
   const { project, setProject } = useProject()
 
   const handleGenerateAIPlan = () => {
-
     if (!project.projectName || !project.budget) {
-      alert("Please enter a project name and budget.")
+      alert("Please enter a Project Name and Budget.")
       return
     }
 
@@ -18,9 +17,8 @@ export default function Home() {
   }
 
   const handleManualBrowse = () => {
-
     if (!project.projectName || !project.budget) {
-      alert("Please enter a project name and budget.")
+      alert("Please enter a Project Name and Budget.")
       return
     }
 
@@ -34,99 +32,76 @@ export default function Home() {
         {/* Header */}
         <div className="flex gap-5 mb-10">
           <button className="bg-white px-10 py-5">
-            logo
+            Logo
           </button>
 
           <button className="bg-white px-10 py-5">
-            new project
+            New Project
           </button>
 
           <button className="bg-white px-10 py-5">
-            saved projects
+            Saved Projects
           </button>
 
           <button className="bg-white px-10 py-5">
-            help
+            Help
           </button>
         </div>
 
 
-        {/* FORM */}
+        {/* Form */}
         <div className="bg-white p-10 mb-8">
           <div className="space-y-5">
 
-            {/* Project Name */}
             <div className="grid grid-cols-[200px_1fr] gap-8 items-center">
-              <label className="text-lg">project name:</label>
-
+              <label className="text-lg font-medium">Project Name:</label>
               <input
                 type="text"
                 className="bg-[#d0d0d0] h-12 px-4"
                 value={project.projectName}
                 onChange={(e) =>
-                  setProject({
-                    ...project,
-                    projectName: e.target.value
-                  })
+                  setProject({ ...project, projectName: e.target.value })
                 }
               />
             </div>
 
-
-            {/* Budget */}
             <div className="grid grid-cols-[200px_1fr] gap-8 items-center">
-              <label className="text-lg">budget:</label>
-
+              <label className="text-lg font-medium">Budget:</label>
               <input
                 type="number"
                 className="bg-[#d0d0d0] h-12 px-4"
                 value={project.budget || ""}
                 onChange={(e) =>
-                  setProject({
-                    ...project,
-                    budget: Number(e.target.value)
-                  })
+                  setProject({ ...project, budget: Number(e.target.value) })
                 }
               />
             </div>
 
-
-            {/* Timeline */}
             <div className="grid grid-cols-[200px_1fr] gap-8 items-center">
-              <label className="text-lg">timeline:</label>
-
+              <label className="text-lg font-medium">Timeline:</label>
               <input
                 type="text"
                 className="bg-[#d0d0d0] h-12 px-4"
                 value={project.timeline}
                 onChange={(e) =>
-                  setProject({
-                    ...project,
-                    timeline: e.target.value
-                  })
+                  setProject({ ...project, timeline: e.target.value })
                 }
               />
             </div>
 
-
-            {/* Category */}
             <div className="grid grid-cols-[200px_1fr] gap-8 items-center">
-              <label className="text-lg">category:</label>
-
+              <label className="text-lg font-medium">Category:</label>
               <select
                 className="bg-[#d0d0d0] h-12 px-4"
                 value={project.category}
                 onChange={(e) =>
-                  setProject({
-                    ...project,
-                    category: e.target.value
-                  })
+                  setProject({ ...project, category: e.target.value })
                 }
               >
-                <option value="">select category</option>
-                <option value="renovation">renovation</option>
-                <option value="electrical">electrical</option>
-                <option value="plumbing">plumbing</option>
+                <option value="">Select Category</option>
+                <option value="renovation">Renovation</option>
+                <option value="electrical">Electrical</option>
+                <option value="plumbing">Plumbing</option>
               </select>
             </div>
 
@@ -136,18 +111,15 @@ export default function Home() {
 
         {/* Description */}
         <div className="mb-12">
-          <label className="text-lg block mb-4">
-            describe project
+          <label className="text-lg font-medium block mb-4">
+            Project Description
           </label>
 
           <textarea
             className="w-full bg-white border-2 border-gray-300 min-h-[200px] p-4"
             value={project.description}
             onChange={(e) =>
-              setProject({
-                ...project,
-                description: e.target.value
-              })
+              setProject({ ...project, description: e.target.value })
             }
           />
         </div>
@@ -158,16 +130,16 @@ export default function Home() {
 
           <button
             onClick={handleGenerateAIPlan}
-            className="bg-white px-12 py-5 hover:bg-gray-100 transition"
+            className="bg-white px-12 py-5 hover:bg-gray-100 transition font-medium"
           >
-            generate AI plan
+            Generate AI Plan
           </button>
 
           <button
             onClick={handleManualBrowse}
-            className="bg-white px-12 py-5 hover:bg-gray-100 transition"
+            className="bg-white px-12 py-5 hover:bg-gray-100 transition font-medium"
           >
-            skip and browse manually
+            Browse Products Manually
           </button>
 
         </div>
