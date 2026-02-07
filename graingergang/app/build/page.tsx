@@ -1,6 +1,9 @@
 "use client"
 
+import { useRouter } from 'next/navigation'
+
 export default function BuildPage() {
+  const router = useRouter()
 
   const projectName = "Warehouse Setup"
   const budget = 5000
@@ -11,11 +14,14 @@ export default function BuildPage() {
   const difference = Math.abs(budget - estimatedCost)
   const percentUsed = Math.min((estimatedCost / budget) * 100, 100)
 
+  const handleGeneratePurchaseList = () => {
+    router.push('/cart')
+  }
+
   return (
     <div className="min-h-screen bg-[#d0d0d0] p-8">
       <div className="max-w-6xl mx-auto space-y-8">
 
-        {/* HEADER */}
         <div className="flex justify-between items-center border-b pb-4">
           <div className="flex gap-8 text-lg">
             <span>project: {projectName}</span>
@@ -27,8 +33,6 @@ export default function BuildPage() {
           </span>
         </div>
 
-
-        {/* AI RESULTS */}
         <div className="bg-white p-8 rounded">
           <h2 className="text-xl mb-6 font-semibold">
             AI Results Summary
@@ -55,7 +59,6 @@ export default function BuildPage() {
               }
             </p>
 
-            {/* Progress Bar */}
             <div className="w-full bg-gray-300 h-4 rounded overflow-hidden">
               <div
                 className={`h-4 ${
@@ -72,11 +75,8 @@ export default function BuildPage() {
           </div>
         </div>
 
-
-        {/* SPLIT PANEL */}
         <div className="grid grid-cols-2 gap-8">
 
-          {/* AI Suggestions */}
           <div className="bg-white p-6 rounded">
             <h3 className="text-lg mb-4 font-semibold">
               AI Suggestions
@@ -109,8 +109,6 @@ export default function BuildPage() {
             </div>
           </div>
 
-
-          {/* Product Browser */}
           <div className="bg-white p-6 rounded">
             <h3 className="text-lg mb-4 font-semibold">
               Product Browser
@@ -128,8 +126,6 @@ export default function BuildPage() {
 
         </div>
 
-
-        {/* CART */}
         <div className="bg-white p-8 flex justify-between items-center rounded">
           <div className="space-y-1">
             <p>items: {items}</p>
@@ -138,7 +134,10 @@ export default function BuildPage() {
             </p>
           </div>
 
-          <button className="bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition">
+          <button 
+            onClick={handleGeneratePurchaseList}
+            className="bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition"
+          >
             Generate Purchase List
           </button>
         </div>
