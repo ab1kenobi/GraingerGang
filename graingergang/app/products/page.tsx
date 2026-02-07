@@ -5,25 +5,26 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 
 type Product = {
-  id: string
-  title: string
-  item_number?: string
-  price?: string
-  availability?: string
-  url?: string
-  specs_flat?: string
+  id: number
+  product: string
+  image_url: string
+  grainger_url: string
+  price: string
+  label: string
+  created_at: string
 }
 
 async function fetchProducts(filters: { category: string; brand: string; price: string; inStock: string }) {
   const params = new URLSearchParams()
 
-  // Map the Category filter to the "title" query param (searches by product title)
-  if (filters.category) params.set("title", filters.category)
-  if (filters.price) params.set("price", filters.price)
-  if (filters.inStock) params.set("availability", filters.inStock)
+  // Map the Category filter to the "label" query param (searches by product label/category)
+  if (filters.category) params.set('label', filters.category)
+  // Map the Brand filter to "product" query param (searches product name which includes brand)
+  if (filters.brand) params.set('product', filters.brand)
+  if (filters.price) params.set('price', filters.price)
 
   const res = await fetch(`/backend?${params.toString()}`)
-  if (!res.ok) throw new Error("Failed to fetch products")
+  if (!res.ok) throw new Error('Failed to fetch products')
   return res.json()
 }
 
@@ -153,18 +154,28 @@ export default function ProductsPage() {
           ) : (
             <div className="grid grid-cols-4 gap-4">
               {products.map((product) => (
-                <div
+                <a
                   key={product.id}
+                  href={product.grainger_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-[#c0c0c0] p-3 cursor-pointer hover:bg-[#b0b0b0] flex flex-col justify-between"
                 >
-                  <p className="text-sm font-semibold truncate">{product.title}</p>
+                  {product.image_url && (
+                    <img
+                      src={product.image_url}
+                      alt={product.product}
+                      className="w-full h-24 object-contain mb-2"
+                    />
+                  )}
+                  <p className="text-sm font-semibold truncate">{product.product}</p>
                   {product.price && (
-                    <p className="text-xs mt-1">{product.price}</p>
+                    <p className="text-xs mt-1">${product.price}</p>
                   )}
-                  {product.availability && (
-                    <p className="text-xs text-gray-600 mt-1">{product.availability}</p>
+                  {product.label && (
+                    <p className="text-xs text-gray-600 mt-1">{product.label}</p>
                   )}
-                </div>
+                </a>
               ))}
             </div>
           )}

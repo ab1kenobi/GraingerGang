@@ -32,8 +32,8 @@ def search_grainger_products(category: str, max_price: float):
         # query the table
         response = supabase.table('grainger_products') \
             .select('*') \
-            .ilike('Label', f"%{category}%") \
-            .lte('Prices', max_price) \
+            .ilike('label', f"%{category}%") \
+            .lte('price', max_price) \
             .limit(3) \
             .execute()
         
@@ -45,9 +45,9 @@ def search_grainger_products(category: str, max_price: float):
         # format the results for gemini
         results = []
         for p in products:
-            name = p.get('Product', 'Unknown Product')
-            price = p.get('Prices', 'N/A')
-            link = p.get('Grainger URL', '#')
+            name = p.get('product', 'Unknown Product')
+            price = p.get('price', 'N/A')
+            link = p.get('grainger_url', '#')
             results.append(f"Product: {name} | Price: ${price} | Link: {link}")
             
         return "\n".join(results)
@@ -57,7 +57,7 @@ def search_grainger_products(category: str, max_price: float):
 
 # 3. run example prompt
 if __name__ == "__main__":
-    user_query = "I want to renovate my bathroom and begin by getting a new faucet. What is a faucet within my budget of 200?"
+    user_query = "I want to renovate my bathroom and begin by getting a new sink. What is a sink within my budget of 200?"
     print(f"User: {user_query}")
 
     # tool configuration
