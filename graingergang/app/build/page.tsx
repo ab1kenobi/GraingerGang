@@ -2,18 +2,64 @@
 
 import { useRouter } from 'next/navigation'
 import { useProject } from "../context/ProjectContext"
+import { useEffect, useState } from "react"
+import { getProducts } from "@/lib/api"
+import ProductCard from "@/components/ProductCard"
+
+type Product = {
+  id: number
+  product: string
+  price: number
+  image_url: string
+  grainger_url: string
+}
 
 export default function BuildPage() {
 
   const router = useRouter()
   const { project } = useProject()
 
- 
-  // Later backend will replace these
-  const estimatedCost = 4200
-  const items = 6
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
 
   const budget = project.budget || 0
+
+  useEffect(() => {
+
+    // 🚨 Never fetch with no budget
+    if (!budget) {
+      setLoading(false)
+      return
+    }
+
+    async function loadProducts() {
+      try {
+
+        // ⭐ Smart demo behavior:
+        // Pull products UNDER budget so AI looks intelligent
+        const data = await getProducts({
+          price: budget
+        })
+
+        setProducts(data)
+
+      } catch (err) {
+        console.error("Failed to fetch products:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadProducts()
+
+  }, [budget])
+
+
+  // ⭐ REAL calculations
+  const estimatedCost =
+    products.reduce((sum, p) => sum + Number(p.price), 0)
+
+  const items = products.length
 
   const overBudget = estimatedCost > budget
   const difference = Math.abs(budget - estimatedCost)
@@ -72,107 +118,90 @@ export default function BuildPage() {
             AI Results Summary
           </h2>
 
-          <div className="space-y-4">
+          {loading ? (
 
-            <p>
-              Generated {items} Recommended Tools
+            <p className="animate-pulse">
+              Generating smart recommendations...
             </p>
 
-            <p className={overBudget ? "text-red-600 font-semibold" : ""}>
-              Estimated Cost: ${estimatedCost.toLocaleString()}
-            </p>
+          ) : (
 
-            <p
-              className={
-                overBudget
-                  ? "text-red-600 font-semibold"
-                  : "text-green-600 font-semibold"
-              }
-            >
-              {overBudget
-                ? `Over Budget By: $${difference.toLocaleString()}`
-                : `Under Budget By: $${difference.toLocaleString()}`
-              }
-            </p>
+            <div className="space-y-4">
+
+              <p>
+                Generated {items} Recommended Tools
+              </p>
+
+              <p className={overBudget ? "text-red-600 font-semibold" : ""}>
+                Estimated Cost: ${estimatedCost.toLocaleString()}
+              </p>
+
+              <p
+                className={
+                  overBudget
+                    ? "text-red-600 font-semibold"
+                    : "text-green-600 font-semibold"
+                }
+              >
+                {overBudget
+                  ? `Over Budget By: $${difference.toLocaleString()}`
+                  : `Under Budget By: $${difference.toLocaleString()}`
+                }
+              </p>
 
 
-            {/* Progress Bar */}
-            <div className="w-full bg-gray-300 h-4 rounded overflow-hidden">
-              <div
-                className={`h-4 ${
-                  overBudget ? "bg-red-500" : "bg-green-500"
-                }`}
-                style={{ width: `${percentUsed}%` }}
-              />
+              {/* Progress Bar */}
+              <div className="w-full bg-gray-300 h-4 rounded overflow-hidden">
+                <div
+                  className={`h-4 ${
+                    overBudget ? "bg-red-500" : "bg-green-500"
+                  }`}
+                  style={{ width: `${percentUsed}%` }}
+                />
+              </div>
+
+              <p className="text-sm text-gray-600">
+                {percentUsed.toFixed(0)}% of budget used
+              </p>
+
             </div>
 
-            <p className="text-sm text-gray-600">
-              {percentUsed.toFixed(0)}% of budget used
-            </p>
+          )}
 
-          </div>
         </div>
 
 
 
-        {/* SPLIT PANEL */}
-        <div className="grid grid-cols-2 gap-8">
+        {/* PRODUCT GRID */}
+        <div className="bg-white p-6 rounded shadow-sm">
 
-          {/* AI Suggestions */}
-          <div className="bg-white p-6 rounded shadow-sm">
+          <h3 className="text-lg mb-6 font-semibold">
+            Recommended Products
+          </h3>
 
-            <h3 className="text-lg mb-4 font-semibold">
-              AI Suggestions
-            </h3>
+          {loading ? (
 
-            <div className="space-y-3">
+            <p>Loading products...</p>
 
-              {[1,2,3,4].map((item) => (
-                <div
-                  key={item}
-                  className="flex justify-between items-center bg-[#d0d0d0] p-4 rounded"
-                >
+          ) : products.length === 0 ? (
 
-                  <div>
-                    <p className="font-medium">
-                      Industrial Drill
-                    </p>
+            <p className="text-gray-500">
+              No products found within this budget.
+            </p>
 
-                    <p className="text-sm text-gray-600">
-                      Recommended for heavy-duty warehouse mounting
-                    </p>
-                  </div>
+          ) : (
 
-                  <span className="font-semibold">
-                    $120
-                  </span>
-
-                </div>
-              ))}
-
-            </div>
-          </div>
-
-
-
-          {/* PRODUCT BROWSER */}
-          <div className="bg-white p-6 rounded shadow-sm">
-
-            <h3 className="text-lg mb-4 font-semibold">
-              Product Browser
-            </h3>
-
-            <div className="grid grid-cols-3 gap-4">
-
-              {[1,2,3,4,5,6].map((item) => (
-                <div
-                  key={item}
-                  className="bg-[#d0d0d0] h-24 rounded hover:bg-[#bdbdbd] cursor-pointer transition"
+            // ⭐ responsive grid upgrade
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
                 />
               ))}
-
             </div>
-          </div>
+
+          )}
 
         </div>
 
