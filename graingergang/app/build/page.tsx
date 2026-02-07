@@ -1,6 +1,16 @@
 "use client"
 
 export default function BuildPage() {
+
+  const projectName = "Warehouse Setup"
+  const budget = 5000
+  const estimatedCost = 4200
+  const items = 6
+
+  const overBudget = estimatedCost > budget
+  const difference = Math.abs(budget - estimatedCost)
+  const percentUsed = Math.min((estimatedCost / budget) * 100, 100)
+
   return (
     <div className="min-h-screen bg-[#d0d0d0] p-8">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -8,31 +18,66 @@ export default function BuildPage() {
         {/* HEADER */}
         <div className="flex justify-between items-center border-b pb-4">
           <div className="flex gap-8 text-lg">
-            <span>project: Warehouse Setup</span>
-            <span>budget: $5000</span>
+            <span>project: {projectName}</span>
+            <span>budget: ${budget.toLocaleString()}</span>
           </div>
 
-          <span className="text-lg">cart: 3</span>
+          <span className="text-lg font-semibold">
+            cart: {items}
+          </span>
         </div>
 
+
         {/* AI RESULTS */}
-        <div className="bg-white p-8">
+        <div className="bg-white p-8 rounded">
           <h2 className="text-xl mb-6 font-semibold">
-            AI Results Summary:
+            AI Results Summary
           </h2>
 
           <div className="space-y-4">
+
             <p>Generated 6 Recommended Tools</p>
-            <p>Estimated Cost: $4,200</p>
-            <p>Under Budget By: $800</p>
+
+            <p className={overBudget ? "text-red-600 font-semibold" : ""}>
+              Estimated Cost: ${estimatedCost.toLocaleString()}
+            </p>
+
+            <p
+              className={
+                overBudget
+                  ? "text-red-600 font-semibold"
+                  : "text-green-600 font-semibold"
+              }
+            >
+              {overBudget
+                ? `Over Budget By: $${difference.toLocaleString()}`
+                : `Under Budget By: $${difference.toLocaleString()}`
+              }
+            </p>
+
+            {/* Progress Bar */}
+            <div className="w-full bg-gray-300 h-4 rounded overflow-hidden">
+              <div
+                className={`h-4 ${
+                  overBudget ? "bg-red-500" : "bg-green-500"
+                }`}
+                style={{ width: `${percentUsed}%` }}
+              />
+            </div>
+
+            <p className="text-sm text-gray-600">
+              {percentUsed.toFixed(0)}% of budget used
+            </p>
+
           </div>
         </div>
+
 
         {/* SPLIT PANEL */}
         <div className="grid grid-cols-2 gap-8">
 
           {/* AI Suggestions */}
-          <div className="bg-white p-6">
+          <div className="bg-white p-6 rounded">
             <h3 className="text-lg mb-4 font-semibold">
               AI Suggestions
             </h3>
@@ -41,11 +86,22 @@ export default function BuildPage() {
               {[1,2,3,4].map((item) => (
                 <div 
                   key={item}
-                  className="flex justify-between items-center bg-[#d0d0d0] p-3"
+                  className="flex justify-between items-center bg-[#d0d0d0] p-4 rounded"
                 >
-                  <span>Industrial Drill</span>
-                  <span>$120</span>
-                  <button className="bg-white px-3 py-1">
+                  <div>
+                    <p className="font-medium">
+                      Industrial Drill
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Recommended for heavy-duty warehouse mounting
+                    </p>
+                  </div>
+
+                  <span className="font-semibold">
+                    $120
+                  </span>
+
+                  <button className="bg-white border px-3 py-1 rounded hover:bg-gray-200 transition">
                     swap
                   </button>
                 </div>
@@ -53,8 +109,9 @@ export default function BuildPage() {
             </div>
           </div>
 
+
           {/* Product Browser */}
-          <div className="bg-white p-6">
+          <div className="bg-white p-6 rounded">
             <h3 className="text-lg mb-4 font-semibold">
               Product Browser
             </h3>
@@ -63,22 +120,26 @@ export default function BuildPage() {
               {[1,2,3,4,5,6].map((item) => (
                 <div 
                   key={item}
-                  className="bg-[#d0d0d0] h-24"
+                  className="bg-[#d0d0d0] h-24 rounded hover:bg-[#bdbdbd] cursor-pointer transition"
                 />
               ))}
             </div>
           </div>
+
         </div>
 
+
         {/* CART */}
-        <div className="bg-white p-8 flex justify-between items-center">
-          <div>
-            <p>items: 6</p>
-            <p>total: $4,200</p>
+        <div className="bg-white p-8 flex justify-between items-center rounded">
+          <div className="space-y-1">
+            <p>items: {items}</p>
+            <p className="font-semibold">
+              total: ${estimatedCost.toLocaleString()}
+            </p>
           </div>
 
-          <button className="bg-white border px-6 py-3">
-            go to build
+          <button className="bg-black text-white px-6 py-3 rounded hover:bg-gray-800 transition">
+            Generate Purchase List
           </button>
         </div>
 
