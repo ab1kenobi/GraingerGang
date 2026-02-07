@@ -87,7 +87,10 @@ export default function CartPage() {
           <button className="bg-white px-6 py-3 rounded shadow hover:bg-gray-50 transition">
             save
           </button>
-          <button className="bg-white px-6 py-3 rounded shadow hover:bg-gray-50 transition">
+          <button 
+            onClick={() => router.push('/grainger')}
+            className="bg-white px-6 py-3 rounded shadow hover:bg-gray-50 transition"
+          >
             checkout
           </button>
           <button className="bg-white px-6 py-3 rounded shadow hover:bg-gray-50 transition ml-auto">
