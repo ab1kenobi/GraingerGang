@@ -3,32 +3,32 @@ import { supabase } from './supabase';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const label = searchParams.get('Label');
-  const name = searchParams.get('Product');
-  const price = searchParams.get('Prices');
-  const imageurl = searchParams.get('Image URL');
-  const graingerurl = searchParams.get('Grainger URL');
+  const label = searchParams.get('label');
+  const name = searchParams.get('product');
+  const price = searchParams.get('price');
+  const imageurl = searchParams.get('image_url');
+  const graingerurl = searchParams.get('grainger_url');
 
-  let query = supabase.from('products').select('*');
+  let query = supabase.from('grainger_products').select('*');
   
   if (label) {
-    query = query.ilike('name', `%${label}%`); // Case-insensitive search
+    query = query.ilike('label', `%${label}%`);
   }
 
   if (name) {
-    query = query.ilike('Name', `%${name}%`);
+    query = query.ilike('product', `%${name}%`);
   }
 
   if (price) {
-    query = query.ilike('price', `%${price}%`);
+    query = query.lte('price', parseFloat(price));
   }
 
   if (imageurl) {
-    query = query.ilike('Photo', `%${imageurl}%`);
+    query = query.ilike('image_url', `%${imageurl}%`);
   }
 
   if (graingerurl) {
-    query = query.ilike('url', `%${graingerurl}%`);
+    query = query.ilike('grainger_url', `%${graingerurl}%`);
   }
 
   // Limit to 50 items so we don't crash the browser
