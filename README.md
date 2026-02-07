@@ -2,7 +2,7 @@
 
 **PCPartPicker, but for Grainger.**
 
-Tool Smith is an AI-powered procurement tool that helps construction and industrial professionals build optimized project plans using real products from [Grainger.com](https://www.grainger.com). Describe your project, set a budget, and let AI recommend the best tools and materials — all with live pricing, images, and direct links to purchase.
+Tool Smith is an AI-powered procurement tool that helps construction and industrial professionals build optimized project plans using real products from [Grainger.com](https://www.grainger.com). Describe your project, set a budget, and let AI recommend the best tools and materials, all with live pricing, images, and direct links to purchase.
 
 ---
 
@@ -12,8 +12,8 @@ Tool Smith is an AI-powered procurement tool that helps construction and industr
 
 Start by filling out your project details on the homepage:
 
-- **Project Name** — e.g. "Bathroom Renovation"
-- **Budget** — your spending limit
+- **Project Name** - e.g. "Bathroom Renovation"
+- **Budget** - your spending limit
 - **Timeline** — project deadline
 - **Category** — Renovation, Electrical, Plumbing, etc.
 - **Description** — Description of project needs(e.g. *"I need to renovate my bathroom — looking for a new sink, faucet, and shower fixtures under $500"*)
@@ -38,7 +38,7 @@ The build page displays:
 
 Click **"Generate Purchase List"** to move your recommended products into an editable cart:
 
-- Adjust **quantities** for each item — line totals update in real time
+- Adjust **quantities** for each item - line totals update in real time
 - Remove items you don't need
 - View a **cost breakdown** with subtotal, tax (8%), total, and remaining budget
 - See a **category breakdown chart** showing spending distribution
@@ -170,7 +170,7 @@ Tool Smith aims to be the **PCPartPicker for industrial procurement**. Just like
 - **Save and revisit** project builds anytime
 - **Go straight to purchase** — every product links directly to its Grainger page
 
-Whether you're a contractor planning a plumbing job, a facilities manager stocking up on tools, or a project lead building out a materials list — Tool Smith turns hours of catalog browsing into minutes.
+Whether you're a contractor planning a plumbing job, a facilities manager stocking up on tools, or a project lead building out a materials list - Tool Smith turns hours of catalog browsing into minutes.
 
 ---
 
