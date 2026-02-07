@@ -1,59 +1,88 @@
 "use client"
 
-import { useState } from "react"
-import { mockProducts, Product } from "../data/mockProducts"
-import ProductCard from "../components/ProductCard"
-import BudgetBar from "../components/BudgetBar"
-import Charts from "../components/Charts"
-import AIInsights from "../components/AIInsights"
-import { Slider } from "@/components/ui/slider"
-
 export default function BuildPage() {
-  const [budget, setBudget] = useState(2500)
-  const [cart, setCart] = useState<Product[]>(mockProducts)
-
-  const total = cart.reduce((sum, p) => sum + p.price, 0)
-
-  const removeProduct = (id: string) => {
-    setCart(cart.filter(p => p.id !== id))
-  }
-
   return (
-    <div className="p-6 pb-24">
-      <div className="grid grid-cols-12 gap-6">
-        {/* LEFT */}
-        <div className="col-span-3">
-          <h3 className="font-semibold mb-2">Project Budget</h3>
-          <Slider
-            defaultValue={[budget]}
-            min={500}
-            max={5000}
-            step={100}
-            onValueChange={(v) => setBudget(v[0])}
-          />
-          <p className="mt-2 font-bold">${budget}</p>
+    <div className="min-h-screen bg-[#d0d0d0] p-8">
+      <div className="max-w-6xl mx-auto space-y-8">
+
+        {/* HEADER */}
+        <div className="flex justify-between items-center border-b pb-4">
+          <div className="flex gap-8 text-lg">
+            <span>project: Warehouse Setup</span>
+            <span>budget: $5000</span>
+          </div>
+
+          <span className="text-lg">cart: 3</span>
         </div>
 
-        {/* CENTER */}
-        <div className="col-span-6 space-y-4">
-          {cart.map(product => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              onRemove={removeProduct}
-            />
-          ))}
+        {/* AI RESULTS */}
+        <div className="bg-white p-8">
+          <h2 className="text-xl mb-6 font-semibold">
+            AI Results Summary:
+          </h2>
 
-          <Charts cart={cart} />
+          <div className="space-y-4">
+            <p>Generated 6 Recommended Tools</p>
+            <p>Estimated Cost: $4,200</p>
+            <p>Under Budget By: $800</p>
+          </div>
         </div>
 
-        {/* RIGHT */}
-        <div className="col-span-3">
-          <AIInsights budget={budget} cart={cart} />
+        {/* SPLIT PANEL */}
+        <div className="grid grid-cols-2 gap-8">
+
+          {/* AI Suggestions */}
+          <div className="bg-white p-6">
+            <h3 className="text-lg mb-4 font-semibold">
+              AI Suggestions
+            </h3>
+
+            <div className="space-y-3">
+              {[1,2,3,4].map((item) => (
+                <div 
+                  key={item}
+                  className="flex justify-between items-center bg-[#d0d0d0] p-3"
+                >
+                  <span>Industrial Drill</span>
+                  <span>$120</span>
+                  <button className="bg-white px-3 py-1">
+                    swap
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Product Browser */}
+          <div className="bg-white p-6">
+            <h3 className="text-lg mb-4 font-semibold">
+              Product Browser
+            </h3>
+
+            <div className="grid grid-cols-3 gap-4">
+              {[1,2,3,4,5,6].map((item) => (
+                <div 
+                  key={item}
+                  className="bg-[#d0d0d0] h-24"
+                />
+              ))}
+            </div>
+          </div>
         </div>
+
+        {/* CART */}
+        <div className="bg-white p-8 flex justify-between items-center">
+          <div>
+            <p>items: 6</p>
+            <p>total: $4,200</p>
+          </div>
+
+          <button className="bg-white border px-6 py-3">
+            go to build
+          </button>
+        </div>
+
       </div>
-
-      <BudgetBar budget={budget} total={total} />
     </div>
   )
 }
