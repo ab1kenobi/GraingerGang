@@ -50,7 +50,7 @@ export default function BuildPage() {
               className={
                 overBudget
                   ? "text-red-600 font-semibold"
-                  : "text-green-600 font-semibold"
+                  : "text-white font-semibold"
               }
             >
               {overBudget
@@ -59,16 +59,18 @@ export default function BuildPage() {
               }
             </p>
 
-            <div className="w-full bg-gray-300 h-4 rounded overflow-hidden">
+            <div className="w-full bg-gray-300/30 h-4 rounded overflow-hidden">
               <div
                 className={`h-4 ${
-                  overBudget ? "bg-red-500" : "bg-green-500"
+                  overBudget
+                    ? "bg-red-500"
+                    : "bg-white/95 shadow-md"
                 }`}
                 style={{ width: `${percentUsed}%` }}
               />
             </div>
 
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-400">
               {percentUsed.toFixed(0)}% of budget used
             </p>
 
