@@ -1,0 +1,97 @@
+# push_to_supabase.py
+# Usage:
+#   python push_to_supabase.py output.csv
+#
+# Env vars needed:
+#   SUPABASE_URL="https://xxxxx.supabase.co"
+#   SUPABASE_SERVICE_KEY="your_service_role_key"
+
+import os
+import sys
+import csv
+import hashlib
+import re
+from datetime import datetime, timezone
+from supabase import create_client, Client
+
+def doc_id_for(row: dict) -> str:
+    item = (row.get("item_number") or "").strip()
+    if item:
+        return item
+    url = (row.get("url") or "").strip().encode("utf-8")
+    return hashlib.sha1(url).hexdigest()
+
+def parse_specs_flat(specs_flat: str) -> dict:
+    out = {}
+    if not specs_flat:
+        return out
+    parts = [p.strip() for p in specs_flat.split(";") if p.strip()]
+    for p in parts:
+        if "=" in p:
+            k, v = p.split("=", 1)
+            k = re.sub(r"\s+", " ", k).strip()
+            v = re.sub(r"\s+", " ", v).strip()
+            if k and v:
+                out[k] = v
+    return out
+
+def chunked(iterable, n=500):
+    buf = []
+    for x in iterable:
+        buf.append(x)
+        if len(buf) >= n:
+            yield buf
+            buf = []
+    if buf:
+        yield buf
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python push_to_supabase.py output.csv")
+        sys.exit(1)
+
+    csv_path = sys.argv[1]
+    url = os.environ.get("SUPABASE_URL")
+    key = os.environ.get("SUPABASE_SERVICE_KEY")
+
+    if not url or not key:
+        print("Missing env vars. Set SUPABASE_URL and SUPABASE_SERVICE_KEY.")
+        sys.exit(1)
+
+    supabase: Client = create_client(url, key)
+
+    rows = []
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        r = csv.DictReader(f)
+        for row in r:
+            # Skip scrape errors
+            if (row.get("specs") or "").startswith("ERROR:"):
+                continue
+
+            specs_flat = row.get("specs", "") or ""
+            specs = parse_specs_flat(specs_flat)
+
+            rows.append({
+                "id": doc_id_for(row),
+                "url": row.get("url", ""),
+                "title": row.get("title", ""),
+                "item_number": row.get("item_number", ""),
+                "mfr_model": row.get("mfr_model", ""),
+                "price": row.get("price", ""),
+                "availability": row.get("availability", ""),
+                "specs": specs,
+                "specs_flat": specs_flat,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            })
+
+    total = 0
+    for batch in chunked(rows, n=500):
+        # upsert on primary key 'id'
+        resp = supabase.table("products").upsert(batch).execute()
+        # supabase-py returns data; if error occurs it raises or includes error depending on version
+        total += len(batch)
+
+    print(f"Upserted {total} products into Supabase table 'products'.")
+
+if __name__ == "__main__":
+    main()
