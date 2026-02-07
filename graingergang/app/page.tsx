@@ -1,11 +1,13 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { useProject } from "./context/ProjectContext"
 
 export default function Home() {
   const router = useRouter()
-  const { project, setProject } = useProject()
+  const { project, setProject, savedProjects, loadProject, deleteProject, resetProject } = useProject()
+  const [showSaved, setShowSaved] = useState(false)
 
   const handleGenerateAIPlan = () => {
     if (!project.projectName || !project.budget) {
@@ -25,6 +27,17 @@ export default function Home() {
     router.push("/products")
   }
 
+  const handleNewProject = () => {
+    resetProject()
+    setShowSaved(false)
+  }
+
+  const handleLoadProject = (id: string) => {
+    loadProject(id)
+    setShowSaved(false)
+    router.push("/cart")
+  }
+
   return (
     <div className="min-h-screen bg-[#d0d0d0] p-8">
       <div className="max-w-6xl mx-auto">
@@ -35,11 +48,17 @@ export default function Home() {
             Logo
           </button>
 
-          <button className="bg-white px-10 py-5">
+          <button
+            onClick={handleNewProject}
+            className="bg-white px-10 py-5 hover:bg-gray-100 transition"
+          >
             New Project
           </button>
 
-          <button className="bg-white px-10 py-5">
+          <button
+            onClick={() => setShowSaved(!showSaved)}
+            className={`px-10 py-5 transition ${showSaved ? 'bg-black text-white' : 'bg-white hover:bg-gray-100'}`}
+          >
             Saved Projects
           </button>
 
@@ -47,6 +66,55 @@ export default function Home() {
             Help
           </button>
         </div>
+
+
+        {/* Saved Projects Panel */}
+        {showSaved && (
+          <div className="bg-white p-8 mb-8 rounded shadow">
+            <h2 className="text-xl font-semibold mb-4">Saved Projects</h2>
+
+            {savedProjects.length === 0 ? (
+              <p className="text-gray-500">No saved projects yet. Create a project and save it from the purchase list.</p>
+            ) : (
+              <div className="space-y-3">
+                {savedProjects.map(sp => (
+                  <div
+                    key={sp.id}
+                    className="flex items-center justify-between bg-gray-100 p-4 rounded hover:bg-gray-200 transition"
+                  >
+                    <div
+                      className="flex-1 cursor-pointer"
+                      onClick={() => handleLoadProject(sp.id)}
+                    >
+                      <div className="flex items-center gap-4">
+                        <h3 className="font-semibold text-lg">{sp.projectName}</h3>
+                        <span className="text-sm text-gray-500">saved {sp.savedAt}</span>
+                      </div>
+                      <div className="flex gap-6 text-sm text-gray-600 mt-1">
+                        <span>Budget: ${sp.budget.toLocaleString()}</span>
+                        <span>Items: {sp.items.length}</span>
+                        <span>Total: ${sp.totalCost.toFixed(2)}</span>
+                        <span className={sp.totalCost > sp.budget ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'}>
+                          {sp.totalCost > sp.budget ? 'Over Budget' : 'Under Budget'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        deleteProject(sp.id)
+                      }}
+                      className="ml-4 text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1 rounded text-sm"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
 
         {/* Form */}

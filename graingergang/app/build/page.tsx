@@ -12,13 +12,13 @@ type Product = {
   image_url: string
   grainger_url: string
   label?: string
-  reasoning?: string  // AI reasoning for this recommendation
+  reasoning?: string
 }
 
 export default function BuildPage() {
 
   const router = useRouter()
-  const { project } = useProject()
+  const { project, setCartItems } = useProject()
 
   const [products, setProducts] = useState<Product[]>([])
   const [aiSummary, setAiSummary] = useState<string>('')
@@ -30,23 +30,14 @@ export default function BuildPage() {
 
   useEffect(() => {
 
-<<<<<<< Updated upstream
-    if (!budget) {
-=======
-    // 🚨 Never fetch with no budget or project details
     if (!budget || !project.projectName) {
->>>>>>> Stashed changes
       setLoading(false)
       return
     }
 
     async function loadProducts() {
       try {
-<<<<<<< Updated upstream
-        const data = await getProducts({ price: budget })
-        setProducts(data)
-=======
-        setError('') // Clear previous errors
+        setError('')
 
         const requestBody = {
           description: project.description || project.projectName,
@@ -56,7 +47,6 @@ export default function BuildPage() {
 
         console.log('🔍 Sending to AI route:', requestBody)
 
-        // ⭐ Call the AI route instead of direct database query
         const response = await fetch('/backend/ai', {
           method: 'POST',
           headers: {
@@ -65,13 +55,7 @@ export default function BuildPage() {
           body: JSON.stringify(requestBody)
         })
 
-        console.log('📡 Response status:', response.status)
-        console.log('📡 Response ok?:', response.ok)
-        console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()))
-
-        // Try to get response text first
         const responseText = await response.text()
-        console.log('📄 Raw response text:', responseText)
 
         if (!response.ok) {
           let errorData
@@ -90,11 +74,9 @@ export default function BuildPage() {
         setProducts(data.products || [])
         setAiSummary(data.aiText || 'AI recommendations generated')
 
->>>>>>> Stashed changes
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error'
         console.error("❌ Failed to fetch AI recommendations:", errorMessage)
-        console.error("❌ Full error:", err)
         setError(`Error: ${errorMessage}`)
         setAiSummary('Failed to generate AI recommendations. Please try again.')
       } finally {
@@ -122,6 +104,16 @@ export default function BuildPage() {
 
 
   const handleGeneratePurchaseList = () => {
+    // Store products into shared context so cart page can use them
+    setCartItems(products.map(p => ({
+      id: p.id,
+      item: p.product,
+      category: p.label || 'General',
+      price: Number(p.price),
+      quantity: 1,
+      image_url: p.image_url || '',
+      grainger_url: p.grainger_url || '#',
+    })))
     router.push('/cart')
   }
 
@@ -270,11 +262,7 @@ export default function BuildPage() {
           ) : products.length === 0 ? (
 
             <p className="text-gray-500">
-<<<<<<< Updated upstream
-              No Products Found Within This Budget
-=======
               No products found. Try adjusting your budget or project description.
->>>>>>> Stashed changes
             </p>
 
           ) : (
